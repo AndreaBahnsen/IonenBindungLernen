@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ionenverbindungen Trainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('hintergrund.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .mode-selector {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            padding: 12px 30px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .element-selection-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .element-column {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .element-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .element-tile {
+            aspect-ratio: 1;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .element-tile:hover {
+            transform: translateY(-5px) rotate(2deg);
+        }
+
+        .element-tile.metal:hover {
+            box-shadow: 0 10px 20px rgba(74, 144, 226, 0.4);
+        }
+
+        .element-tile.nonmetal:hover {
+            box-shadow: 0 10px 20px rgba(244, 208, 63, 0.4);
+        }
+
+        .element-tile.metal {
+            border-color: #4a90e2;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        }
+
+        .element-tile.nonmetal {
+            border-color: #f4d03f;
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+        }
+
+        .element-tile.selected {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .element-tile.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .element-symbol {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .element-name {
+            font-size: 0.7em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .work-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .three-column-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .column {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .metal-column {
+            border-left: 4px solid #4a90e2;
+        }
+
+        .nonmetal-column {
+            border-left: 4px solid #f4d03f;
+        }
+
+        .center-column {
+            border-left: 4px solid #667eea;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .column-title {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .final-formula-box {
+            width: 100%;
+        }
+
+        .final-formula-box .input-field {
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .equation-input {
+            margin-bottom: 20px;
+        }
+
+        .equation-label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-field.correct {
+            border-color: #51cf66;
+            background-color: #f0fff4;
+        }
+
+        .input-field.incorrect {
+            border-color: #ff6b6b;
+            background-color: #fff5f5;
+        }
+
+        .helper-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .live-preview {
+            margin-top: 8px;
+            padding: 10px;
+            background: #f0f4ff;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            min-height: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .live-preview:empty::before {
+            content: "Vorschau erscheint hier...";
+            color: #999;
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        .question-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .question-text {
+            color: #856404;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .feedback.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .feedback.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #51cf66 0%, #40c057 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        sub {
+            font-size: 0.7em;
+        }
+
+        sup {
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚗️ Ionenverbindungen Trainer</h1>
+        <p class="subtitle">Übe das Bilden von Ionenverbindungen Schritt für Schritt!</p>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="correctCount">0</div>
+                <div class="stat-label">Richtig</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Versuche</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="streakCount">0</div>
+                <div class="stat-label">Serie</div>
+            </div>
+        </div>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" id="detailedModeBtn">📚 Lernmodus</button>
+            <button class="mode-btn" id="simpleModeBtn">⭐ Profi-Modus</button>
+        </div>
+
+        <div id="elementSelection" class="element-selection-container">
+            <div class="section element-column">
+                <div class="section-title">1. Wähle ein Metall (Hauptgruppe):</div>
+                <div class="element-grid" id="metalGrid"></div>
+            </div>
+
+            <div class="section element-column hidden" id="nonmetalSection">
+                <div class="section-title">2. Wähle ein Nichtmetall:</div>
+                <div class="element-grid" id="nonmetalGrid"></div>
+            </div>
+        </div>
+
+        <div class="work-area hidden" id="workArea"></div>
+
+        <div class="button-group hidden" id="buttonGroup">
+            <button class="btn btn-primary" id="checkBtn">Überprüfen</button>
+            <button class="btn btn-secondary" id="nextBtn">Nächste Aufgabe</button>
+        </div>
+    </div>
+
+    <script>
+        // Elementdaten
+        const metals = [
+            { symbol: 'Li', name: 'Lithium', group: 1, valenceElectrons: 1 },
+            { symbol: 'Na', name: 'Natrium', group: 1, valenceElectrons: 1 },
+            { symbol: 'K', name: 'Kalium', group: 1, valenceElectrons: 1 },
+            { symbol: 'Rb', name: 'Rubidium', group: 1, valenceElectrons: 1 },
+            { symbol: 'Cs', name: 'Cäsium', group: 1, valenceElectrons: 1 },
+            { symbol: 'Be', name: 'Beryllium', group: 2, valenceElectrons: 2 },
+            { symbol: 'Mg', name: 'Magnesium', group: 2, valenceElectrons: 2 },
+            { symbol: 'Ca', name: 'Calcium', group: 2, valenceElectrons: 2 },
+            { symbol: 'Sr', name: 'Strontium', group: 2, valenceElectrons: 2 },
+            { symbol: 'Ba', name: 'Barium', group: 2, valenceElectrons: 2 },
+            { symbol: 'Al', name: 'Aluminium', group: 13, valenceElectrons: 3 },
+            { symbol: 'Ga', name: 'Gallium', group: 13, valenceElectrons: 3 }
+        ];
+
+        const nonmetals = [
+            { symbol: 'N', name: 'Stickstoff', group: 15, electronsNeeded: 3 },
+            { symbol: 'P', name: 'Phosphor', group: 15, electronsNeeded: 3 },
+            { symbol: 'As', name: 'Arsen', group: 15, electronsNeeded: 3 },
+            { symbol: 'O', name: 'Sauerstoff', group: 16, electronsNeeded: 2 },
+            { symbol: 'S', name: 'Schwefel', group: 16, electronsNeeded: 2 },
+            { symbol: 'Se', name: 'Selen', group: 16, electronsNeeded: 2 },
+            { symbol: 'F', name: 'Fluor', group: 17, electronsNeeded: 1 },
+            { symbol: 'Cl', name: 'Chlor', group: 17, electronsNeeded: 1 },
+            { symbol: 'Br', name: 'Brom', group: 17, electronsNeeded: 1 },
+            { symbol: 'I', name: 'Iod', group: 17, electronsNeeded: 1 }
+        ];
+
+        // Spielzustand
+        let gameState = {
+            mode: 'detailed', // 'detailed' oder 'simple'
+            selectedMetal: null,
+            selectedNonmetal: null,
+            currentStep: 0,
+            userAnswers: {},
+            correctCount: 0,
+            totalCount: 0,
+            streak: 0,
+            simpleErrorCount: 0,
+            forcedDetailedMode: false,
+            detailedModeCorrectCount: 0 // Zähler für richtige Antworten im Lernmodus
+        };
+
+        // Initialisierung
+        function init() {
+            renderMetals();
+            renderNonmetals();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            document.getElementById('detailedModeBtn').addEventListener('click', () => setMode('detailed'));
+            document.getElementById('simpleModeBtn').addEventListener('click', () => setMode('simple'));
+            document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+            document.getElementById('nextBtn').addEventListener('click', resetGame);
+        }
+
+        function setMode(mode) {
+            if (gameState.forcedDetailedMode && mode === 'simple') {
+                showFeedback('Du musst noch im Lernmodus üben, bis du sicherer bist!', 'info');
+                return;
+            }
+            gameState.mode = mode;
+            gameState.detailedModeCorrectCount = 0; // Counter zurücksetzen bei Moduswechsel
+            document.getElementById('detailedModeBtn').classList.toggle('active', mode === 'detailed');
+            document.getElementById('simpleModeBtn').classList.toggle('active', mode === 'simple');
+            resetGame();
+        }
+
+        function renderMetals() {
+            const grid = document.getElementById('metalGrid');
+            grid.innerHTML = '';
+            metals.forEach(metal => {
+                const tile = createElementTile(metal, 'metal');
+                tile.addEventListener('click', () => selectMetal(metal));
+                grid.appendChild(tile);
+            });
+        }
+
+        function renderNonmetals() {
+            const grid = document.getElementById('nonmetalGrid');
+            grid.innerHTML = '';
+            nonmetals.forEach(nonmetal => {
+                const tile = createElementTile(nonmetal, 'nonmetal');
+                tile.addEventListener('click', () => selectNonmetal(nonmetal));
+                grid.appendChild(tile);
+            });
+        }
+
+        function createElementTile(element, type) {
+            const tile = document.createElement('div');
+            tile.className = `element-tile ${type}`;
+            tile.innerHTML = `
+                <div class="element-symbol">${element.symbol}</div>
+                <div class="element-name">${element.name}</div>
+            `;
+            return tile;
+        }
+
+        function selectMetal(metal) {
+            gameState.selectedMetal = metal;
+            gameState.currentStep = 1;
+
+            // Alle Metall-Kacheln außer der ausgewählten ausblenden
+            document.querySelectorAll('#metalGrid .element-tile').forEach((tile, index) => {
+                if (metals[index] === metal) {
+                    tile.classList.add('selected');
+                } else {
+                    tile.classList.add('disabled');
+                }
+            });
+
+            // Nichtmetall-Sektion anzeigen
+            document.getElementById('nonmetalSection').classList.remove('hidden');
+        }
+
+        function selectNonmetal(nonmetal) {
+            gameState.selectedNonmetal = nonmetal;
+            gameState.currentStep = 2;
+
+            // Alle Nichtmetall-Kacheln außer der ausgewählten ausblenden
+            document.querySelectorAll('#nonmetalGrid .element-tile').forEach((tile, index) => {
+                if (nonmetals[index] === nonmetal) {
+                    tile.classList.add('selected');
+                } else {
+                    tile.classList.add('disabled');
+                }
+            });
+
+            // Arbeitsbereich anzeigen
+            if (gameState.mode === 'detailed') {
+                showDetailedMode();
+            } else {
+                showSimpleMode();
+            }
+        }
+
+        function showDetailedMode() {
+            const workArea = document.getElementById('workArea');
+            workArea.classList.remove('hidden');
+            document.getElementById('buttonGroup').classList.remove('hidden');
+
+            const metal = gameState.selectedMetal;
+            const nonmetal = gameState.selectedNonmetal;
+
+            workArea.innerHTML = `
+                <div class="feedback info" style="grid-column: 1 / -1;">
+                    Super! Du hast ${metal.name} (${metal.symbol}) und ${nonmetal.name} (${nonmetal.symbol}) gewählt. Jetzt lass uns Schritt für Schritt die Ionenverbindung bilden!
+                </div>
+
+                <div class="three-column-layout">
+                    <div class="column metal-column">
+                        <h3 class="column-title">Metall</h3>
+
+                        <div class="equation-input">
+                            <div class="equation-label">Schritt 1: Metallgleichung</div>
+                            <div class="helper-text">Beispiel: Ca → Ca²⁺ + 2e⁻</div>
+                            <input type="text" class="input-field" id="metalEquation" placeholder="${metal.symbol} → ...">
+                            <div class="live-preview" id="metalEquationPreview"></div>
+                        </div>
+
+                        <div class="question-box hidden" id="metalHelp">
+                            <div class="question-text">Hilfe für die Metallgleichung:</div>
+                            <div id="metalHelpQuestions"></div>
+                        </div>
+
+                        <div class="equation-input">
+                            <div class="equation-label">Schritt 3: Ausgleich</div>
+                            <div class="helper-text">Beispiel: 3Ca → 3Ca²⁺ + 6e⁻</div>
+                            <input type="text" class="input-field" id="metalMultiplied" placeholder="...">
+                            <div class="live-preview" id="metalMultipliedPreview"></div>
+                        </div>
+                    </div>
+
+                    <div class="column center-column">
+                        <h3 class="column-title">→ Verbindung ←</h3>
+
+                        <div class="equation-input final-formula-box">
+                            <div class="equation-label">Schritt 5: Endverhältnis</div>
+                            <div class="helper-text">Beispiel: Ca₃N₂</div>
+                            <input type="text" class="input-field" id="finalFormula" placeholder="...">
+                            <div class="live-preview" id="finalFormulaPreview"></div>
+                        </div>
+                    </div>
+
+                    <div class="column nonmetal-column">
+                        <h3 class="column-title">Nichtmetall</h3>
+
+                        <div class="equation-input">
+                            <div class="equation-label">Schritt 2: Nichtmetallgleichung</div>
+                            <div class="helper-text">Beispiel: N + 3e⁻ → N³⁻</div>
+                            <input type="text" class="input-field" id="nonmetalEquation" placeholder="${nonmetal.symbol} + ... → ...">
+                            <div class="live-preview" id="nonmetalEquationPreview"></div>
+                        </div>
+
+                        <div class="question-box hidden" id="nonmetalHelp">
+                            <div class="question-text">Hilfe für die Nichtmetallgleichung:</div>
+                            <div id="nonmetalHelpQuestions"></div>
+                        </div>
+
+                        <div class="equation-input">
+                            <div class="equation-label">Schritt 4: Ausgleich</div>
+                            <div class="helper-text">Beispiel: 2N + 6e⁻ → 2N³⁻</div>
+                            <input type="text" class="input-field" id="nonmetalMultiplied" placeholder="...">
+                            <div class="live-preview" id="nonmetalMultipliedPreview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="feedback"></div>
+            `;
+
+            // Live-Vorschau für alle Felder aktivieren
+            setupLivePreview('metalEquation', 'metalEquationPreview');
+            setupLivePreview('nonmetalEquation', 'nonmetalEquationPreview');
+            setupLivePreview('metalMultiplied', 'metalMultipliedPreview');
+            setupLivePreview('nonmetalMultiplied', 'nonmetalMultipliedPreview');
+            setupLivePreview('finalFormula', 'finalFormulaPreview');
+        }
+
+        function showSimpleMode() {
+            const workArea = document.getElementById('workArea');
+            workArea.classList.remove('hidden');
+            document.getElementById('buttonGroup').classList.remove('hidden');
+
+            const metal = gameState.selectedMetal;
+            const nonmetal = gameState.selectedNonmetal;
+
+            workArea.innerHTML = `
+                <div class="feedback info">
+                    Du hast ${metal.name} (${metal.symbol}) und ${nonmetal.name} (${nonmetal.symbol}) gewählt.
+                </div>
+
+                <div class="equation-input">
+                    <div class="equation-label">Summenformel der Ionenverbindung:</div>
+                    <div class="helper-text">Beispiel: Ca₃N₂ (Nutze _ für tiefgestellt: Ca_3N_2)</div>
+                    <input type="text" class="input-field" id="finalFormula" placeholder="...">
+                    <div class="live-preview" id="finalFormulaPreview"></div>
+                </div>
+
+                <div id="feedback"></div>
+            `;
+
+            // Live-Vorschau für vereinfachten Modus aktivieren
+            setupLivePreview('finalFormula', 'finalFormulaPreview');
+        }
+
+        function checkAnswer() {
+            const metal = gameState.selectedMetal;
+            const nonmetal = gameState.selectedNonmetal;
+
+            if (gameState.mode === 'detailed') {
+                checkDetailedMode();
+            } else {
+                checkSimpleMode();
+            }
+        }
+
+        function checkDetailedMode() {
+            const metal = gameState.selectedMetal;
+            const nonmetal = gameState.selectedNonmetal;
+
+            let allCorrect = true;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = '';
+
+            // Schritt 1: Metallgleichung
+            const metalEquation = document.getElementById('metalEquation').value.trim();
+            const electronsPart = metal.valenceElectrons === 1 ? 'e^-' : `${metal.valenceElectrons}e^-`;
+            const chargePart = metal.valenceElectrons === 1 ? '+' : `${metal.valenceElectrons}+`;
+            const correctMetalEquation = `${metal.symbol} → ${metal.symbol}^${chargePart} + ${electronsPart}`;
+            const metalCorrect = normalizeEquation(metalEquation) === normalizeEquation(correctMetalEquation);
+
+            const metalField = document.getElementById('metalEquation');
+            if (metalCorrect) {
+                metalField.classList.add('correct');
+                metalField.classList.remove('incorrect');
+            } else {
+                metalField.classList.add('incorrect');
+                metalField.classList.remove('correct');
+                allCorrect = false;
+                showMetalHelp();
+            }
+
+            // Schritt 2: Nichtmetallgleichung
+            const nonmetalEquation = document.getElementById('nonmetalEquation').value.trim();
+            const electronsNeededPart = nonmetal.electronsNeeded === 1 ? 'e^-' : `${nonmetal.electronsNeeded}e^-`;
+            const chargePartNonmetal = nonmetal.electronsNeeded === 1 ? '-' : `${nonmetal.electronsNeeded}-`;
+            const correctNonmetalEquation = `${nonmetal.symbol} + ${electronsNeededPart} → ${nonmetal.symbol}^${chargePartNonmetal}`;
+            const nonmetalCorrect = normalizeEquation(nonmetalEquation) === normalizeEquation(correctNonmetalEquation);
+
+            const nonmetalField = document.getElementById('nonmetalEquation');
+            if (nonmetalCorrect) {
+                nonmetalField.classList.add('correct');
+                nonmetalField.classList.remove('incorrect');
+            } else {
+                nonmetalField.classList.add('incorrect');
+                nonmetalField.classList.remove('correct');
+                allCorrect = false;
+                showNonmetalHelp();
+            }
+
+            // Schritt 3 & 4: Multiplizierte Gleichungen
+            const gcd = findGCD(metal.valenceElectrons, nonmetal.electronsNeeded);
+            const metalMultiplier = nonmetal.electronsNeeded / gcd;
+            const nonmetalMultiplier = metal.valenceElectrons / gcd;
+
+            const metalMultiplied = document.getElementById('metalMultiplied').value.trim();
+            let correctMetalMultiplied;
+            if (metalMultiplier === 1) {
+                correctMetalMultiplied = correctMetalEquation;
+            } else {
+                const metalSymbolPart = `${metalMultiplier}${metal.symbol}`;
+                const chargeDisplay = metal.valenceElectrons === 1 ? '+' : `${metal.valenceElectrons}+`;
+                const ionPart = `${metalMultiplier}${metal.symbol}^${chargeDisplay}`;
+                const totalElectrons = metalMultiplier * metal.valenceElectrons;
+                const electronsPart = totalElectrons === 1 ? 'e^-' : `${totalElectrons}e^-`;
+                correctMetalMultiplied = `${metalSymbolPart} → ${ionPart} + ${electronsPart}`;
+            }
+            const metalMultCorrect = normalizeEquation(metalMultiplied) === normalizeEquation(correctMetalMultiplied);
+
+            const metalMultField = document.getElementById('metalMultiplied');
+            if (metalMultCorrect) {
+                metalMultField.classList.add('correct');
+                metalMultField.classList.remove('incorrect');
+            } else {
+                metalMultField.classList.add('incorrect');
+                metalMultField.classList.remove('correct');
+                allCorrect = false;
+            }
+
+            const nonmetalMultiplied = document.getElementById('nonmetalMultiplied').value.trim();
+            let correctNonmetalMultiplied;
+            if (nonmetalMultiplier === 1) {
+                correctNonmetalMultiplied = correctNonmetalEquation;
+            } else {
+                const nonmetalSymbolPart = `${nonmetalMultiplier}${nonmetal.symbol}`;
+                const totalElectrons = nonmetalMultiplier * nonmetal.electronsNeeded;
+                const electronsPart = totalElectrons === 1 ? 'e^-' : `${totalElectrons}e^-`;
+                const chargeDisplay = nonmetal.electronsNeeded === 1 ? '-' : `${nonmetal.electronsNeeded}-`;
+                const ionPart = `${nonmetalMultiplier}${nonmetal.symbol}^${chargeDisplay}`;
+                correctNonmetalMultiplied = `${nonmetalSymbolPart} + ${electronsPart} → ${ionPart}`;
+            }
+            const nonmetalMultCorrect = normalizeEquation(nonmetalMultiplied) === normalizeEquation(correctNonmetalMultiplied);
+
+            const nonmetalMultField = document.getElementById('nonmetalMultiplied');
+            if (nonmetalMultCorrect) {
+                nonmetalMultField.classList.add('correct');
+                nonmetalMultField.classList.remove('incorrect');
+            } else {
+                nonmetalMultField.classList.add('incorrect');
+                nonmetalMultField.classList.remove('correct');
+                allCorrect = false;
+            }
+
+            // Schritt 5: Endformel
+            const finalFormula = document.getElementById('finalFormula').value.trim();
+            const correctFormula = metalMultiplier === 1 && nonmetalMultiplier === 1
+                ? `${metal.symbol}${nonmetal.symbol}`
+                : metalMultiplier === 1
+                    ? `${metal.symbol}${nonmetal.symbol}_${nonmetalMultiplier}`
+                    : nonmetalMultiplier === 1
+                        ? `${metal.symbol}_${metalMultiplier}${nonmetal.symbol}`
+                        : `${metal.symbol}_${metalMultiplier}${nonmetal.symbol}_${nonmetalMultiplier}`;
+
+            const finalCorrect = normalizeFormula(finalFormula) === normalizeFormula(correctFormula);
+
+            const finalField = document.getElementById('finalFormula');
+            if (finalCorrect) {
+                finalField.classList.add('correct');
+                finalField.classList.remove('incorrect');
+            } else {
+                finalField.classList.add('incorrect');
+                finalField.classList.remove('correct');
+                allCorrect = false;
+            }
+
+            // Feedback
+            if (allCorrect) {
+                const praises = [
+                    'Hervorragend! Alle Schritte sind richtig! 🎉',
+                    'Perfekt gemacht! Du hast alles richtig! 🌟',
+                    'Fantastisch! Du beherrschst das wirklich gut! 👏',
+                    'Großartig! Das war absolut korrekt! 💯',
+                    'Ausgezeichnet! Alle Schritte stimmen! ⭐',
+                    'Super! Du hast das perfekt gelöst! 🎊'
+                ];
+                feedbackDiv.innerHTML = `<div class="feedback success">${praises[Math.floor(Math.random() * praises.length)]}</div>`;
+                gameState.correctCount++;
+                gameState.streak++;
+                gameState.detailedModeCorrectCount++;
+
+                // Nach 5 richtigen Antworten im Lernmodus: Angebot für Profi-Modus
+                if (gameState.detailedModeCorrectCount >= 5) {
+                    if (gameState.forcedDetailedMode) {
+                        // Schüler wurde gezwungen - kann jetzt zurück zum Profi-Modus
+                        feedbackDiv.innerHTML += `
+                            <div class="feedback success" style="margin-top: 15px;">
+                                🎉 Toll! Du hast schon ${gameState.detailedModeCorrectCount} Aufgaben richtig gelöst!
+                                Du kannst jetzt wieder in den Profi-Modus wechseln!
+                                <div style="margin-top: 15px;">
+                                    <button class="btn btn-primary" onclick="unlockProfiMode()" style="margin-right: 10px;">⭐ Ja, ich probiere den Profi-Modus!</button>
+                                    <button class="btn btn-secondary" onclick="stayInLernmodus()">📚 Nein, ich übe noch weiter</button>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // Schüler ist freiwillig im Lernmodus - Ermutigung zum Profi-Modus
+                        feedbackDiv.innerHTML += `
+                            <div class="feedback success" style="margin-top: 15px;">
+                                🎉 Wow! Du hast schon ${gameState.detailedModeCorrectCount} Aufgaben hintereinander richtig gelöst!
+                                Traust du dir den Profi-Modus zu? Dort gibt es keine Hilfe - nur die Endformel!
+                                <div style="margin-top: 15px;">
+                                    <button class="btn btn-primary" onclick="tryProfiMode()" style="margin-right: 10px;">⭐ Ja, ich probiere den Profi-Modus!</button>
+                                    <button class="btn btn-secondary" onclick="stayInLernmodus()">📚 Nein, ich übe noch weiter</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            } else {
+                feedbackDiv.innerHTML = `<div class="feedback error">Nicht ganz richtig. Schau dir die markierten Felder noch einmal an!</div>`;
+                gameState.streak = 0;
+                gameState.detailedModeCorrectCount = 0; // Bei Fehler zurücksetzen
+            }
+
+            gameState.totalCount++;
+            updateStats();
+        }
+
+        function checkSimpleMode() {
+            const metal = gameState.selectedMetal;
+            const nonmetal = gameState.selectedNonmetal;
+
+            const gcd = findGCD(metal.valenceElectrons, nonmetal.electronsNeeded);
+            const metalMultiplier = nonmetal.electronsNeeded / gcd;
+            const nonmetalMultiplier = metal.valenceElectrons / gcd;
+
+            const finalFormula = document.getElementById('finalFormula').value.trim();
+            const correctFormula = metalMultiplier === 1 && nonmetalMultiplier === 1
+                ? `${metal.symbol}${nonmetal.symbol}`
+                : metalMultiplier === 1
+                    ? `${metal.symbol}${nonmetal.symbol}_${nonmetalMultiplier}`
+                    : nonmetalMultiplier === 1
+                        ? `${metal.symbol}_${metalMultiplier}${nonmetal.symbol}`
+                        : `${metal.symbol}_${metalMultiplier}${nonmetal.symbol}_${nonmetalMultiplier}`;
+
+            const finalField = document.getElementById('finalFormula');
+            const feedbackDiv = document.getElementById('feedback');
+
+            if (normalizeFormula(finalFormula) === normalizeFormula(correctFormula)) {
+                finalField.classList.add('correct');
+                finalField.classList.remove('incorrect');
+                const praises = [
+                    'Perfekt! Die Formel stimmt! 🎉',
+                    'Richtig! Sehr gut gemacht! 🌟',
+                    'Genau! Du hast es drauf! 👏',
+                    'Super! Das ist korrekt! 💯'
+                ];
+                feedbackDiv.innerHTML = `<div class="feedback success">${praises[Math.floor(Math.random() * praises.length)]}</div>`;
+                gameState.correctCount++;
+                gameState.streak++;
+                // simpleErrorCount wird NICHT zurückgesetzt - Fehler zählen insgesamt
+            } else {
+                finalField.classList.add('incorrect');
+                finalField.classList.remove('correct');
+                gameState.streak = 0;
+                gameState.simpleErrorCount++;
+
+                // Feedback mit Fehleranzahl
+                feedbackDiv.innerHTML = `<div class="feedback error">Das ist leider nicht richtig. Die richtige Formel wäre: ${formatFormula(correctFormula)}</div>`;
+
+                // Nach 2 Fehlern in den Lernmodus wechseln
+                if (gameState.simpleErrorCount >= 2) {
+                    feedbackDiv.innerHTML += `<div class="feedback info">Du hast nun ${gameState.simpleErrorCount} Fehler gemacht. Du wirst jetzt in den Lernmodus gewechselt, um die Schritte besser zu verstehen.</div>`;
+                    gameState.forcedDetailedMode = true;
+                    setTimeout(() => {
+                        setMode('detailed');
+                    }, 3000);
+                } else if (gameState.simpleErrorCount === 1) {
+                    feedbackDiv.innerHTML += `<div class="feedback info">⚠️ Achtung: Noch ein Fehler und du wirst in den Lernmodus gewechselt!</div>`;
+                }
+            }
+
+            gameState.totalCount++;
+            updateStats();
+        }
+
+        function showMetalHelp() {
+            const helpBox = document.getElementById('metalHelp');
+            const questionsDiv = document.getElementById('metalHelpQuestions');
+            helpBox.classList.remove('hidden');
+
+            const metal = gameState.selectedMetal;
+            const electronsPart = metal.valenceElectrons === 1 ? 'e^-' : `${metal.valenceElectrons}e^-`;
+            const chargePart = metal.valenceElectrons === 1 ? '+' : `${metal.valenceElectrons}+`;
+            const chargeDisplay = metal.valenceElectrons === 1 ? '+' : `${metal.valenceElectrons}+`;
+            questionsDiv.innerHTML = `
+                <p>• In welcher Hauptgruppe steht ${metal.symbol}? <strong>Hauptgruppe ${metal.group}</strong></p>
+                <p>• Wie viele Valenzelektronen gibt ${metal.symbol} ab? <strong>${metal.valenceElectrons} ${metal.valenceElectrons === 1 ? 'Elektron' : 'Elektronen'}</strong></p>
+                <p>• Welche Ladung hat das Ion, wenn es ${metal.valenceElectrons} ${metal.valenceElectrons === 1 ? 'Elektron' : 'Elektronen'} abgibt? <strong>${chargeDisplay}</strong></p>
+                <p>• Richtige Gleichung: <strong>${metal.symbol} → ${metal.symbol}^${chargePart} + ${electronsPart}</strong></p>
+            `;
+        }
+
+        function showNonmetalHelp() {
+            const helpBox = document.getElementById('nonmetalHelp');
+            const questionsDiv = document.getElementById('nonmetalHelpQuestions');
+            helpBox.classList.remove('hidden');
+
+            const nonmetal = gameState.selectedNonmetal;
+            const electronsNeededPart = nonmetal.electronsNeeded === 1 ? 'e^-' : `${nonmetal.electronsNeeded}e^-`;
+            const chargePartNonmetal = nonmetal.electronsNeeded === 1 ? '-' : `${nonmetal.electronsNeeded}-`;
+            const chargeDisplay = nonmetal.electronsNeeded === 1 ? '-' : `${nonmetal.electronsNeeded}-`;
+            questionsDiv.innerHTML = `
+                <p>• In welcher Hauptgruppe steht ${nonmetal.symbol}? <strong>Hauptgruppe ${nonmetal.group}</strong></p>
+                <p>• Wie viele Elektronen braucht ${nonmetal.symbol} zur Edelgaskonfiguration? <strong>${nonmetal.electronsNeeded} ${nonmetal.electronsNeeded === 1 ? 'Elektron' : 'Elektronen'}</strong></p>
+                <p>• Welche Ladung hat das Ion, wenn es ${nonmetal.electronsNeeded} ${nonmetal.electronsNeeded === 1 ? 'Elektron' : 'Elektronen'} aufnimmt? <strong>${chargeDisplay}</strong></p>
+                <p>• Richtige Gleichung: <strong>${nonmetal.symbol} + ${electronsNeededPart} → ${nonmetal.symbol}^${chargePartNonmetal}</strong></p>
+            `;
+        }
+
+        function normalizeEquation(eq) {
+            // Entfernt Leerzeichen und standardisiert die Schreibweise
+            let normalized = eq.replace(/\s+/g, '').toLowerCase()
+                .replace(/\^/g, '')
+                .replace(/→/g, '->')
+                .replace(/−/g, '-')
+                .replace(/⁺/g, '+')
+                .replace(/⁻/g, '-')
+                .replace(/\*/g, '');
+
+            // Entfernt "1" vor "+" oder "-" bei Ladungen (z.B. "1+" -> "+", "1-" -> "-")
+            normalized = normalized.replace(/1\+/g, '+');
+            normalized = normalized.replace(/1-/g, '-');
+
+            // Entfernt "1" vor "e" (z.B. "1e-" -> "e-")
+            normalized = normalized.replace(/1e/g, 'e');
+
+            // Entfernt "1" am Anfang und nach Operatoren vor Buchstaben
+            // z.B. "1ca" -> "ca", "+1n" -> "+n", "->1ca" -> "->ca"
+            normalized = normalized.replace(/(^|->|\+)1([a-z])/g, '$1$2');
+
+            return normalized;
+        }
+
+        function normalizeFormula(formula) {
+            return formula.replace(/\s+/g, '').toLowerCase()
+                .replace(/_/g, '')
+                .replace(/₀/g, '0')
+                .replace(/₁/g, '1')
+                .replace(/₂/g, '2')
+                .replace(/₃/g, '3')
+                .replace(/₄/g, '4')
+                .replace(/₅/g, '5')
+                .replace(/₆/g, '6')
+                .replace(/₇/g, '7')
+                .replace(/₈/g, '8')
+                .replace(/₉/g, '9');
+        }
+
+        function formatFormula(formula) {
+            return formula.replace(/_(\d+)/g, function(match, digit) {
+                const subscripts = '₀₁₂₃₄₅₆₇₈₉';
+                return subscripts[parseInt(digit)];
+            });
+        }
+
+        function findGCD(a, b) {
+            return b === 0 ? a : findGCD(b, a % b);
+        }
+
+        function formatForDisplay(text) {
+            // Konvertiert Eingabe in schön formatierte Anzeige
+            let formatted = text;
+
+            // Tiefgestellte Zahlen (subscript)
+            formatted = formatted.replace(/_(\d)/g, function(match, digit) {
+                const subscripts = '₀₁₂₃₄₅₆₇₈₉';
+                return subscripts[parseInt(digit)];
+            });
+
+            // Hochgestellte Zahlen und Zeichen (superscript)
+            formatted = formatted.replace(/\^(\d+[\+\-]?|[\+\-])/g, function(match, content) {
+                const superscriptMap = {
+                    '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+                    '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹',
+                    '+': '⁺', '-': '⁻'
+                };
+                let result = '';
+                for (let char of content) {
+                    result += superscriptMap[char] || char;
+                }
+                return result;
+            });
+
+            // Pfeile
+            formatted = formatted.replace(/->/g, '→');
+            formatted = formatted.replace(/-->/g, '→');
+
+            return formatted;
+        }
+
+        function setupLivePreview(inputId, previewId) {
+            const inputField = document.getElementById(inputId);
+            const previewField = document.getElementById(previewId);
+
+            if (inputField && previewField) {
+                inputField.addEventListener('input', function() {
+                    const formatted = formatForDisplay(this.value);
+                    previewField.textContent = formatted;
+                });
+            }
+        }
+
+        function unlockProfiMode() {
+            gameState.forcedDetailedMode = false;
+            gameState.detailedModeCorrectCount = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = `
+                <div class="feedback success">
+                    🎉 Super! Du kannst jetzt den Profi-Modus ausprobieren. Klicke oben auf "⭐ Profi-Modus" wenn du bereit bist!
+                </div>
+            `;
+        }
+
+        function tryProfiMode() {
+            gameState.detailedModeCorrectCount = 0;
+            setMode('simple');
+        }
+
+        function stayInLernmodus() {
+            gameState.detailedModeCorrectCount = 0;
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = `
+                <div class="feedback success">
+                    📚 Sehr gut! Weiter so - Übung macht den Meister!
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            document.getElementById('correctCount').textContent = gameState.correctCount;
+            document.getElementById('totalCount').textContent = gameState.totalCount;
+            document.getElementById('streakCount').textContent = gameState.streak;
+        }
+
+        function resetGame() {
+            gameState.selectedMetal = null;
+            gameState.selectedNonmetal = null;
+            gameState.currentStep = 0;
+            gameState.userAnswers = {};
+            // WICHTIG: simpleErrorCount wird NICHT zurückgesetzt, damit Fehler über mehrere Aufgaben gezählt werden
+
+            // Reset UI
+            document.getElementById('workArea').classList.add('hidden');
+            document.getElementById('buttonGroup').classList.add('hidden');
+            document.getElementById('nonmetalSection').classList.add('hidden');
+
+            // Reset tiles
+            document.querySelectorAll('.element-tile').forEach(tile => {
+                tile.classList.remove('selected', 'disabled');
+            });
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
