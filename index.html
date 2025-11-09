@@ -427,6 +427,191 @@
         sup {
             font-size: 0.7em;
         }
+
+        /* Mobile Optimierungen */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+                margin-bottom: 8px;
+            }
+
+            .subtitle {
+                font-size: 0.95em;
+                margin-bottom: 20px;
+            }
+
+            /* Element-Kacheln größer für Touch */
+            .element-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 12px;
+            }
+
+            .element-tile {
+                min-height: 100px;
+            }
+
+            .element-symbol {
+                font-size: 2em;
+            }
+
+            .element-name {
+                font-size: 0.75em;
+            }
+
+            /* Element-Auswahl vertikal stapeln */
+            .element-selection-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            /* 3-Spalten-Layout vertikal stapeln */
+            .three-column-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            /* Buttons größer und volle Breite */
+            .mode-btn {
+                padding: 15px 20px;
+                margin: 5px;
+                font-size: 1.05em;
+                display: inline-block;
+                width: calc(50% - 10px);
+            }
+
+            .btn {
+                padding: 15px 25px;
+                font-size: 1.05em;
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .btn-secondary {
+                margin-left: 0;
+            }
+
+            .button-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Statistik kompakter */
+            .stats {
+                padding: 10px;
+            }
+
+            .stat-value {
+                font-size: 1.5em;
+            }
+
+            .stat-label {
+                font-size: 0.85em;
+            }
+
+            /* Work-Area Padding anpassen */
+            .work-area {
+                padding: 15px;
+            }
+
+            .column {
+                padding: 15px;
+            }
+
+            /* Eingabefelder größer */
+            .input-field {
+                padding: 14px;
+                font-size: 1.05em;
+            }
+
+            /* Live-Vorschau größer */
+            .live-preview {
+                font-size: 1.2em;
+                padding: 12px;
+            }
+
+            /* Feedback-Texte */
+            .feedback {
+                font-size: 0.95em;
+                padding: 12px;
+            }
+        }
+
+        /* Sehr kleine Bildschirme (Handy im Hochformat) */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.3em;
+            }
+
+            .subtitle {
+                font-size: 0.9em;
+            }
+
+            .element-grid {
+                grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+                gap: 10px;
+            }
+
+            .element-tile {
+                min-height: 85px;
+            }
+
+            .element-symbol {
+                font-size: 1.7em;
+            }
+
+            .mode-btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .section-title {
+                font-size: 1.1em;
+            }
+        }
+
+        /* Hilfstasten für chemische Zeichen */
+        .quick-keys {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .quick-key {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 60px;
+        }
+
+        .quick-key:active {
+            transform: scale(0.95);
+            background: #5568d3;
+        }
+
+        @media (max-width: 768px) {
+            .quick-key {
+                padding: 12px 16px;
+                font-size: 1.1em;
+                min-width: 70px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -634,6 +819,7 @@
                             <div class="equation-label">Schritt 1: Metallgleichung</div>
                             <div class="helper-text">Beispiel: Ca → Ca²⁺ + 2e⁻</div>
                             <input type="text" class="input-field" id="metalEquation" placeholder="${metal.symbol} → ...">
+                            ${createQuickKeys('metalEquation')}
                             <div class="live-preview" id="metalEquationPreview"></div>
                         </div>
 
@@ -646,6 +832,7 @@
                             <div class="equation-label">Schritt 3: Ausgleich</div>
                             <div class="helper-text">Beispiel: 3Ca → 3Ca²⁺ + 6e⁻</div>
                             <input type="text" class="input-field" id="metalMultiplied" placeholder="...">
+                            ${createQuickKeys('metalMultiplied')}
                             <div class="live-preview" id="metalMultipliedPreview"></div>
                         </div>
                     </div>
@@ -657,6 +844,7 @@
                             <div class="equation-label">Schritt 5: Endverhältnis</div>
                             <div class="helper-text">Beispiel: Ca₃N₂</div>
                             <input type="text" class="input-field" id="finalFormula" placeholder="...">
+                            ${createQuickKeys('finalFormula')}
                             <div class="live-preview" id="finalFormulaPreview"></div>
                         </div>
                     </div>
@@ -668,6 +856,7 @@
                             <div class="equation-label">Schritt 2: Nichtmetallgleichung</div>
                             <div class="helper-text">Beispiel: N + 3e⁻ → N³⁻</div>
                             <input type="text" class="input-field" id="nonmetalEquation" placeholder="${nonmetal.symbol} + ... → ...">
+                            ${createQuickKeys('nonmetalEquation')}
                             <div class="live-preview" id="nonmetalEquationPreview"></div>
                         </div>
 
@@ -680,6 +869,7 @@
                             <div class="equation-label">Schritt 4: Ausgleich</div>
                             <div class="helper-text">Beispiel: 2N + 6e⁻ → 2N³⁻</div>
                             <input type="text" class="input-field" id="nonmetalMultiplied" placeholder="...">
+                            ${createQuickKeys('nonmetalMultiplied')}
                             <div class="live-preview" id="nonmetalMultipliedPreview"></div>
                         </div>
                     </div>
@@ -713,6 +903,7 @@
                     <div class="equation-label">Summenformel der Ionenverbindung:</div>
                     <div class="helper-text">Beispiel: Ca₃N₂ (Nutze _ für tiefgestellt: Ca_3N_2)</div>
                     <input type="text" class="input-field" id="finalFormula" placeholder="...">
+                    ${createQuickKeys('finalFormula')}
                     <div class="live-preview" id="finalFormulaPreview"></div>
                 </div>
 
@@ -1089,6 +1280,39 @@
                     previewField.textContent = formatted;
                 });
             }
+        }
+
+        function insertText(inputId, text) {
+            const inputField = document.getElementById(inputId);
+            if (inputField) {
+                const start = inputField.selectionStart;
+                const end = inputField.selectionEnd;
+                const currentValue = inputField.value;
+
+                // Text an Cursor-Position einfügen
+                inputField.value = currentValue.substring(0, start) + text + currentValue.substring(end);
+
+                // Cursor nach eingefügtem Text positionieren
+                inputField.selectionStart = inputField.selectionEnd = start + text.length;
+                inputField.focus();
+
+                // Live-Vorschau aktualisieren
+                const event = new Event('input', { bubbles: true });
+                inputField.dispatchEvent(event);
+            }
+        }
+
+        function createQuickKeys(inputId) {
+            return `
+                <div class="quick-keys">
+                    <button type="button" class="quick-key" onclick="insertText('${inputId}', '^')">^</button>
+                    <button type="button" class="quick-key" onclick="insertText('${inputId}', '_')">_</button>
+                    <button type="button" class="quick-key" onclick="insertText('${inputId}', '->')">→</button>
+                    <button type="button" class="quick-key" onclick="insertText('${inputId}', '+')">+</button>
+                    <button type="button" class="quick-key" onclick="insertText('${inputId}', '-')">−</button>
+                    <button type="button" class="quick-key" onclick="insertText('${inputId}', 'e^-')">e⁻</button>
+                </div>
+            `;
         }
 
         function unlockProfiMode() {
