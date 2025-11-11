@@ -337,6 +337,11 @@
             border: 2px solid #bee5eb;
         }
 
+        .success-emoji {
+            font-size: 2em;
+            margin-left: 8px;
+        }
+
         .btn {
             padding: 12px 30px;
             border: none;
@@ -421,11 +426,11 @@
         }
 
         sub {
-            font-size: 0.7em;
+            font-size: 1.0em;
         }
 
         sup {
-            font-size: 0.7em;
+            font-size: 1.0em;
         }
 
         /* Mobile Optimierungen */
@@ -1047,12 +1052,12 @@
             // Feedback
             if (allCorrect) {
                 const praises = [
-                    'Hervorragend! Alle Schritte sind richtig! 🎉',
-                    'Perfekt gemacht! Du hast alles richtig! 🌟',
-                    'Fantastisch! Du beherrschst das wirklich gut! 👏',
-                    'Großartig! Das war absolut korrekt! 💯',
-                    'Ausgezeichnet! Alle Schritte stimmen! ⭐',
-                    'Super! Du hast das perfekt gelöst! 🎊'
+                    'Hervorragend! Alle Schritte sind richtig!<span class="success-emoji">🎉</span>',
+                    'Perfekt gemacht! Du hast alles richtig!<span class="success-emoji">🌟</span>',
+                    'Fantastisch! Du beherrschst das wirklich gut!<span class="success-emoji">👏</span>',
+                    'Großartig! Das war absolut korrekt!<span class="success-emoji">💯</span>',
+                    'Ausgezeichnet! Alle Schritte stimmen!<span class="success-emoji">⭐</span>',
+                    'Super! Du hast das perfekt gelöst!<span class="success-emoji">🎊</span>'
                 ];
                 feedbackDiv.innerHTML = `<div class="feedback success">${praises[Math.floor(Math.random() * praises.length)]}</div>`;
                 gameState.correctCount++;
@@ -1121,10 +1126,10 @@
                 finalField.classList.add('correct');
                 finalField.classList.remove('incorrect');
                 const praises = [
-                    'Perfekt! Die Formel stimmt! 🎉',
-                    'Richtig! Sehr gut gemacht! 🌟',
-                    'Genau! Du hast es drauf! 👏',
-                    'Super! Das ist korrekt! 💯'
+                    'Perfekt! Die Formel stimmt!<span class="success-emoji">🎉</span>',
+                    'Richtig! Sehr gut gemacht!<span class="success-emoji">🌟</span>',
+                    'Genau! Du hast es drauf!<span class="success-emoji">👏</span>',
+                    'Super! Das ist korrekt!<span class="success-emoji">💯</span>'
                 ];
                 feedbackDiv.innerHTML = `<div class="feedback success">${praises[Math.floor(Math.random() * praises.length)]}</div>`;
                 gameState.correctCount++;
@@ -1165,7 +1170,7 @@
             const chargePart = metal.valenceElectrons === 1 ? '+' : `${metal.valenceElectrons}+`;
             const chargeDisplay = metal.valenceElectrons === 1 ? '+' : `${metal.valenceElectrons}+`;
             questionsDiv.innerHTML = `
-                <p>• In welcher Hauptgruppe steht ${metal.symbol}? <strong>Hauptgruppe ${metal.group}</strong></p>
+                <p>• In welcher Hauptgruppe steht ${metal.symbol}? <strong>Hauptgruppe ${getGroupLabel(metal.group)}</strong></p>
                 <p>• Wie viele Valenzelektronen gibt ${metal.symbol} ab? <strong>${metal.valenceElectrons} ${metal.valenceElectrons === 1 ? 'Elektron' : 'Elektronen'}</strong></p>
                 <p>• Welche Ladung hat das Ion, wenn es ${metal.valenceElectrons} ${metal.valenceElectrons === 1 ? 'Elektron' : 'Elektronen'} abgibt? <strong>${chargeDisplay}</strong></p>
                 <p>• Richtige Gleichung: <strong>${metal.symbol} → ${metal.symbol}^${chargePart} + ${electronsPart}</strong></p>
@@ -1182,7 +1187,7 @@
             const chargePartNonmetal = nonmetal.electronsNeeded === 1 ? '-' : `${nonmetal.electronsNeeded}-`;
             const chargeDisplay = nonmetal.electronsNeeded === 1 ? '-' : `${nonmetal.electronsNeeded}-`;
             questionsDiv.innerHTML = `
-                <p>• In welcher Hauptgruppe steht ${nonmetal.symbol}? <strong>Hauptgruppe ${nonmetal.group}</strong></p>
+                <p>• In welcher Hauptgruppe steht ${nonmetal.symbol}? <strong>Hauptgruppe ${getGroupLabel(nonmetal.group)}</strong></p>
                 <p>• Wie viele Elektronen braucht ${nonmetal.symbol} zur Edelgaskonfiguration? <strong>${nonmetal.electronsNeeded} ${nonmetal.electronsNeeded === 1 ? 'Elektron' : 'Elektronen'}</strong></p>
                 <p>• Welche Ladung hat das Ion, wenn es ${nonmetal.electronsNeeded} ${nonmetal.electronsNeeded === 1 ? 'Elektron' : 'Elektronen'} aufnimmt? <strong>${chargeDisplay}</strong></p>
                 <p>• Richtige Gleichung: <strong>${nonmetal.symbol} + ${electronsNeededPart} → ${nonmetal.symbol}^${chargePartNonmetal}</strong></p>
@@ -1237,6 +1242,25 @@
 
         function findGCD(a, b) {
             return b === 0 ? a : findGCD(b, a % b);
+        }
+
+        function getRomanNumeral(group) {
+            // Konvertiert moderne Gruppennummer zu römischer Ziffer (alte Bezeichnung)
+            const romanMap = {
+                1: 'I',
+                2: 'II',
+                13: 'III',
+                15: 'V',
+                16: 'VI',
+                17: 'VII'
+            };
+            return romanMap[group] || '';
+        }
+
+        function getGroupLabel(group) {
+            // Gibt beide Bezeichnungen zurück: "I/1" oder "II/2" etc.
+            const roman = getRomanNumeral(group);
+            return roman ? `${roman}/${group}` : `${group}`;
         }
 
         function formatForDisplay(text) {
